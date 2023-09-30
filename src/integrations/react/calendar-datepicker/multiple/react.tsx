@@ -1,32 +1,38 @@
 /** @jsxImportSource react */
+import { QRL } from "@builder.io/qwik";
 import { useState } from "react";
 import { Calendar } from "react-modern-calendar-datepicker";
 
-export const CalendarReactMultiplePicker = () => {
-  const preselectedDays = [
-    {
-      year: 2019,
-      month: 10,
-      day: 2,
-    },
-    {
-      year: 2019,
-      month: 10,
-      day: 15,
-    },
-    {
-      year: 2019,
-      month: 10,
-      day: 30,
-    },
-  ];
+interface DayItem {
+  year: number;
+  month: number;
+  day: number;
+}
 
-  const [selectedDayRange, setSelectedDayRange] = useState(preselectedDays);
+interface MultipleSelectionsProp {
+  selections: Array<DayItem>;
+  setSelectedDayRange: QRL<(daySelections: Array<DayItem>) => void>;
+}
+
+export const CalendarReactMultiplePicker = (props: MultipleSelectionsProp) => {
+
+
+  const { selections, setSelectedDayRange: selectMultipleDays } = props;
+
+  const changeValue = (value: DayItem[]) => {
+    console.log("change", value);
+    // To set value in component to view in app
+    setSelectedDayRange(value);
+    // update qwik route component principal info
+    selectMultipleDays(value);
+  };
+
+  const [selectedDayRange, setSelectedDayRange] = useState(selections);
   return (
     <>
       <Calendar
         value={selectedDayRange}
-        onChange={setSelectedDayRange}
+        onChange={(value) => changeValue(value)}
         shouldHighlightWeekends
       />
       <ul>

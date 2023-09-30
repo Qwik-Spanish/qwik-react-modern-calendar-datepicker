@@ -1,4 +1,4 @@
-import { component$, useStyles$ } from "@builder.io/qwik";
+import { component$, useSignal, useStyles$,  $ } from "@builder.io/qwik";
 import type { DocumentHead } from "@builder.io/qwik-city";
 
 // 1.- el componente de NPM ya convertido en Qwik
@@ -12,8 +12,32 @@ import {
 import calendarDatePicker from "./../../node_modules/react-modern-calendar-datepicker/lib/DatePicker.css?inline";
 
 export default component$(() => {
+  const preSelectIndividualMultiple = useSignal([
+    {
+      year: 2019,
+      month: 10,
+      day: 2,
+    },
+    {
+      year: 2019,
+      month: 10,
+      day: 15,
+    },
+    {
+      year: 2019,
+      month: 10,
+      day: 30,
+    },
+  ]);
   // 3.- Estilos
   useStyles$(calendarDatePicker);
+
+  // Function to pass in React child component to update select range value
+  const setRange = $((value: any) => {
+    console.log('router/index.tsx', value);
+    preSelectIndividualMultiple.value = value;
+  });
+
   return (
     <>
       <h1>React Modern Calendar</h1>
@@ -30,7 +54,7 @@ export default component$(() => {
       </div>
       <div>
         <h2>Múltiples selecciones</h2>
-        <QCalendarReactMultiplePicker />
+        <QCalendarReactMultiplePicker selections={preSelectIndividualMultiple.value} setSelectedDayRange={setRange}/>
         <hr />
       </div>
     </>
